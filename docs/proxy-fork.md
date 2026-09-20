@@ -11,7 +11,7 @@ https://github.com/nckrtl/proxy-cli-usage. Do not copy those rules into Swift or
 replace upstream's provider registry. All built-in providers, including Cursor, remain available in Settings. Enabling one
 alongside proxy plugins uses the upstream authentication and UI. The merged indicator
 follows either kind of selected tab; installation must preserve enabled built-ins.
-The existing four JavaScript plugins remain
+The existing five JavaScript plugins remain
 ordinary CodexBar providers and can run in the official app without account controls.
 
 Additions are isolated in `ProxyPool*.swift` and
@@ -19,6 +19,10 @@ Additions are isolated in `ProxyPool*.swift` and
 icon renderer and plugin cards/settings. Keep these call sites small when merging.
 The generic plugin icon change can be carried or upstreamed independently of the
 private bridge UI.
+
+`ProxyProviderBrand.swift` maps the five proxy tabs and menu cards to the built-in
+Codex, Claude, Antigravity, Grok and Kimi artwork. It reuses upstream assets without copying
+them; unrelated plugins keep their configured monograms.
 
 The plugin icon follows the selected enabled plugin, respects used/remaining mode,
 and reads that plugin's primary/secondary windows. Expired windows are unknown.

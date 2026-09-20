@@ -28,6 +28,7 @@ struct ProxyPoolProvider: Decodable, Sendable {
     static func bridgeID(pluginID: String) -> String? {
         switch pluginID {
         case "proxy-codex": "codex"
+        case "proxy-claude": "claude"
         case "proxy-antigravity": "antigravity"
         case "proxy-xai": "xai"
         case "proxy-kimi": "kimi"

@@ -74,6 +74,7 @@ struct ProxyPoolTests {
             }
         }
         #expect(ProxyPoolProvider.bridgeID(pluginID: "proxy-xai") == "xai")
+        #expect(ProxyPoolProvider.bridgeID(pluginID: "proxy-claude") == "claude")
         #expect(ProxyPoolProvider.bridgeID(pluginID: "unrelated-plugin") == nil)
     }
 }

@@ -144,6 +144,7 @@ extension StatusItemController {
     }
 
     func userPluginSwitcherIcon(for plugin: UserProviderPlugin) -> NSImage {
+        if let brand = ProxyProviderBrand.image(for: plugin) { return brand }
         let size = NSSize(width: 16, height: 16)
         let image = NSImage(size: size, flipped: false) { rect in
             let rawTint = plugin.manifest.icon.tint.dropFirst()
@@ -207,11 +208,18 @@ private struct UserPluginMenuCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 9) {
             HStack(spacing: 8) {
-                Text(self.plugin.manifest.icon.monogram)
-                    .font(.caption.bold())
-                    .foregroundStyle(.white)
-                    .frame(width: 26, height: 26)
-                    .background(self.tint, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                if let brand = ProxyProviderBrand.image(for: self.plugin) {
+                    Image(nsImage: brand)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 26, height: 26)
+                } else {
+                    Text(self.plugin.manifest.icon.monogram)
+                        .font(.caption.bold())
+                        .foregroundStyle(.white)
+                        .frame(width: 26, height: 26)
+                        .background(self.tint, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                }
                 VStack(alignment: .leading, spacing: 1) {
                     Text(self.plugin.manifest.name).font(.headline)
                     Text(self.plugin.fileURL.lastPathComponent)

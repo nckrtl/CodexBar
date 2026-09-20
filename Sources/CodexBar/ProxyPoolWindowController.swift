@@ -150,7 +150,7 @@ private struct ProxyPoolView: View {
                 Text("CLIProxyAPI · Beast")
                 Spacer()
                 if let date = self.model.updatedAt {
-                    Text("Collected \(date.formatted(date: .omitted, time: .standard))")
+                    Text("Bridge updated \(date.formatted(date: .omitted, time: .standard))")
                 }
             }.font(.caption).foregroundStyle(.secondary).padding(12)
         }
@@ -185,6 +185,14 @@ private struct ProxyPoolView: View {
                 }
                 if let error = account.error {
                     Label(error, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.orange)
+                }
+                if let checked = account.checkedAt, checked.isFinite {
+                    Text("Quota checked \(Date(timeIntervalSince1970: checked).formatted())")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                if let next = account.nextCheckAt, next.isFinite {
+                    Text("Next check \(Date(timeIntervalSince1970: next).formatted())")
+                        .font(.caption).foregroundStyle(.secondary)
                 }
                 if account.unavailable, !account.disabled {
                     Text("Temporarily unavailable or cooling down").font(.caption).foregroundStyle(.orange)

@@ -46,6 +46,8 @@ struct ProxyPoolAccount: Decodable, Identifiable, Sendable {
     let credentialCount: Int?
     let windows: [ProxyPoolWindow]
     let error: String?
+    let checkedAt: Double?
+    let nextCheckAt: Double?
 
     var displayName: String {
         self.label ?? "Account \(self.id.prefix(8))"

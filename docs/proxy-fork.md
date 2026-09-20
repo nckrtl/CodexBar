@@ -23,7 +23,7 @@ private bridge UI.
 The plugin icon follows the selected enabled plugin, respects used/remaining mode,
 and reads that plugin's primary/secondary windows. Expired windows are unknown.
 The account window displays each named pool and account window independently.
-Disabled accounts stay visible but do not contribute capacity; they are not probed.
+Disabled accounts retain their individual quota where readable but do not contribute capacity.
 Failed refreshes show a visible warning and disable controls until a fresh read.
 
 The native client uses the selected plugin's HTTPS `BASE_URL`, `BRIDGE_TOKEN` and

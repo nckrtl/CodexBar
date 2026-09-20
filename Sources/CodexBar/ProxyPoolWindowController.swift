@@ -180,21 +180,20 @@ private struct ProxyPoolView: View {
                         .accessibilityLabel("Enable \(account.displayName)")
                 }
                 if account.disabled {
-                    Text("Excluded from pool. Quota is not fetched while disabled.")
+                    Text("Excluded from the combined pool. Individual quota remains visible.")
                         .font(.caption).foregroundStyle(.secondary)
-                } else {
-                    if let error = account.error {
-                        Label(error, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.orange)
-                    }
-                    if account.unavailable {
-                        Text("Temporarily unavailable or cooling down").font(.caption).foregroundStyle(.orange)
-                    }
-                    ForEach(account.windows) { window in
-                        ProxyPoolQuotaRow(window: window, showUsed: self.showUsed)
-                    }
-                    if account.windows.isEmpty, account.error == nil {
-                        Text("Quota unavailable").font(.caption).foregroundStyle(.secondary)
-                    }
+                }
+                if let error = account.error {
+                    Label(error, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.orange)
+                }
+                if account.unavailable, !account.disabled {
+                    Text("Temporarily unavailable or cooling down").font(.caption).foregroundStyle(.orange)
+                }
+                ForEach(account.windows) { window in
+                    ProxyPoolQuotaRow(window: window, showUsed: self.showUsed)
+                }
+                if account.windows.isEmpty, account.error == nil {
+                    Text("Quota unavailable").font(.caption).foregroundStyle(.secondary)
                 }
             }.padding(8).frame(maxWidth: .infinity, alignment: .leading)
         }

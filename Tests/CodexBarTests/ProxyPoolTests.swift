@@ -5,9 +5,9 @@ import Testing
 
 struct ProxyPoolTests {
     @Test
-    func `switching active plugins changes the indicator source and disabled selections fall back`() {
-        let codex = ProviderInstanceID(rawValue: "proxy-codex")
-        let grok = ProviderInstanceID(rawValue: "proxy-xai")
+    func `switching active plugins changes the indicator source and disabled selections fall back`() throws {
+        let codex = try #require(ProviderInstanceID(rawValue: "proxy-codex"))
+        let grok = try #require(ProviderInstanceID(rawValue: "proxy-xai"))
         let plugins = [codex, grok]
         #expect(PluginIconSelection.resolve(selected: codex, plugins: plugins, hasFirstPartyProviders: false) == codex)
         #expect(PluginIconSelection.resolve(selected: grok, plugins: plugins, hasFirstPartyProviders: false) == grok)

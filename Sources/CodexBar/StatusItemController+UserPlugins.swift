@@ -93,6 +93,7 @@ extension StatusItemController {
                 isRefreshing: self.store.refreshingProviders.contains(plugin.manifest.id),
                 showUsed: self.settings.usageBarsShowUsed,
                 width: width,
+                onManageAccounts: self.proxyPoolAction(for: plugin, menu: menu),
                 onRefresh: { [weak self] in
                     self?.startManualRefresh(
                         for: plugin.manifest.id,
@@ -200,6 +201,7 @@ private struct UserPluginMenuCardView: View {
     let isRefreshing: Bool
     let showUsed: Bool
     let width: CGFloat
+    let onManageAccounts: (() -> Void)?
     let onRefresh: () -> Void
 
     var body: some View {
@@ -226,6 +228,11 @@ private struct UserPluginMenuCardView: View {
                     .buttonStyle(.plain)
                     .help("Refresh")
                 }
+            }
+            if let onManageAccounts {
+                Button("Accounts and pool…", systemImage: "person.2", action: onManageAccounts)
+                    .buttonStyle(.plain)
+                    .font(.callout)
             }
             if let snapshot {
                 self.window("Primary", snapshot.primary)

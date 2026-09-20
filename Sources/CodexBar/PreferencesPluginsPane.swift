@@ -155,6 +155,12 @@ struct PluginsPane: View {
                     .textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
             }
+            if ProxyPoolProvider.bridgeID(pluginID: plugin.manifest.id.rawValue) != nil {
+                Button("Accounts and pool…", systemImage: "person.2") {
+                    ProxyPoolWindowController.shared.show(plugin: plugin, settings: self.settings, store: self.store)
+                }
+                .disabled(!approved)
+            }
             HStack {
                 if !approved {
                     Button(L("Approve…")) { self.requestApproval(plugin: plugin, sourceURL: nil) }

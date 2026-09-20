@@ -30,15 +30,32 @@ enum PluginIconSelection {
 }
 
 extension StatusItemController {
-    func userPluginMenuBarContent() -> (image: NSImage, title: String?, label: String)? {
+    private func selectedMenuBarPlugin() -> UserProviderPlugin? {
         guard self.shouldMergeIcons else { return nil }
         let plugins = self.topLevelUserProviderPlugins()
         let selected = PluginIconSelection.resolve(
             selected: self.selectedMenuProvider,
             plugins: plugins.map(\.manifest.id),
             hasFirstPartyProviders: !self.store.enabledFirstPartyProvidersForDisplay().isEmpty)
-        let plugin = plugins.first { $0.manifest.id == selected }
-        guard let plugin else { return nil }
+        return plugins.first { $0.manifest.id == selected }
+    }
+
+    func userPluginIconObservationSignature() -> String? {
+        guard let plugin = self.selectedMenuBarPlugin() else { return nil }
+        let values = PluginIconValues(
+            snapshot: self.store.snapshots[plugin.manifest.id], showUsed: self.settings.usageBarsShowUsed)
+        return [
+            "plugin=\(plugin.manifest.id.rawValue)",
+            "primary=\(String(describing: values.primary))",
+            "secondary=\(String(describing: values.secondary))",
+            "error=\(self.store.errors[plugin.manifest.id] != nil)",
+            "showUsed=\(self.settings.usageBarsShowUsed)",
+            "showPercent=\(self.settings.menuBarShowsBrandIconWithPercent)",
+        ].joined(separator: "|")
+    }
+
+    func userPluginMenuBarContent() -> (image: NSImage, title: String?, label: String)? {
+        guard let plugin = self.selectedMenuBarPlugin() else { return nil }
         let snapshot = self.store.snapshots[plugin.manifest.id]
         let values = PluginIconValues(snapshot: snapshot, showUsed: self.settings.usageBarsShowUsed)
         let stale = self.store.errors[plugin.manifest.id] != nil || snapshot == nil

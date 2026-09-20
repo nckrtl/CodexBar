@@ -9,6 +9,43 @@ import Testing
 
 @Suite(.serialized)
 struct UserProviderPluginTests {
+    @MainActor
+    @Test
+    func `background plugin quota refresh invalidates the menu bar icon signature`() throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+        _ = try fixture.write(
+            name: "meter.js",
+            source: Self.menuPlugin(id: "proxy-meter", name: "Proxy Meter", topLevel: true))
+        let plugin = try #require(UserProviderPluginRegistry.refresh(
+            loader: fixture.loader(transport: RecordingTransport(responseJSON: "{}"))).first?.plugin)
+        let (controller, store, settings) = Self.makePluginMenuController(
+            suiteName: "UserProviderPluginTests.proxyIconObservation",
+            selectedPluginID: plugin.manifest.id,
+            enabledPluginIDs: [plugin.manifest.id],
+            approvalStore: fixture.approvals)
+        defer { controller.releaseStatusItemsForTesting() }
+        settings.mergeIcons = true
+        let missing = controller.storeIconObservationSignature()
+        store.snapshots[plugin.manifest.id] = UsageSnapshot(
+            primary: RateWindow(usedPercent: 40, windowMinutes: nil, resetsAt: nil, resetDescription: nil),
+            secondary: nil,
+            updatedAt: Date())
+        let initial = controller.storeIconObservationSignature()
+        #expect(initial != missing)
+        #expect(controller.userPluginMenuBarContent() != nil)
+        store.snapshots[plugin.manifest.id] = UsageSnapshot(
+            primary: RateWindow(usedPercent: 80, windowMinutes: nil, resetsAt: nil, resetDescription: nil),
+            secondary: nil,
+            updatedAt: Date())
+        let changed = controller.storeIconObservationSignature()
+        #expect(changed != initial)
+        store.errors[plugin.manifest.id] = "Unavailable"
+        #expect(controller.storeIconObservationSignature() != changed)
+        settings.setPluginEnabled(plugin.manifest.id, enabled: false)
+        #expect(controller.userPluginMenuBarContent() == nil)
+    }
+
     @Test
     func `JavaScript plugin discovers approves fetches and produces a generic snapshot`() async throws {
         let fixture = try Fixture()

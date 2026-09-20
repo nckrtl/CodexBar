@@ -3,6 +3,7 @@ import Foundation
 
 extension StatusItemController {
     func storeIconObservationSignature() -> String {
+        if let plugin = self.userPluginIconObservationSignature() { return plugin }
         let showBrandPercent = self.settings.menuBarShowsBrandIconWithPercent
         let mergeIcons = self.shouldMergeIcons
         let visibleProviders = self.store.enabledProvidersForDisplay().map(\.rawValue).sorted().joined(separator: ",")

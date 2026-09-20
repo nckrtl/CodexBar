@@ -262,6 +262,17 @@ extension StatusItemController {
             return true
         }
 
+        if let plugin = self.userPluginMenuBarContent() {
+            self.lastAppliedMergedIconRenderSignature = nil
+            self.setButtonContent(image: plugin.image, title: plugin.title, for: button)
+            button.setAccessibilityLabel(plugin.label)
+            button.toolTip = plugin.label
+            self.noteIconPerfRender(skipped: false)
+            return false
+        }
+        button.toolTip = nil
+        button.setAccessibilityLabel(nil)
+
         let style = self.store.iconStyle
         let showUsed = self.settings.usageBarsShowUsed
         let showBrandPercent = self.settings.menuBarShowsBrandIconWithPercent

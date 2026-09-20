@@ -108,7 +108,7 @@ final class ProviderSwitcherView: NSView {
             count: self.segments.count,
             maxAllowedSegmentWidth: initialMaxAllowedSegmentWidth,
             stackedIcons: self.stackedIcons)
-        self.rowSpacing = self.stackedIcons ? 4 : 2
+        self.rowSpacing = self.stackedIcons ? 8 : 2
         self.rowHeight = Self.switcherButtonHeight(stackedIcons: self.stackedIcons, rowCount: self.rowCount)
         let height: CGFloat = self.rowHeight * CGFloat(self.rowCount)
             + self.rowSpacing * CGFloat(max(0, self.rowCount - 1))
@@ -575,7 +575,7 @@ final class ProviderSwitcherView: NSView {
 
     private static func switcherButtonHeight(stackedIcons: Bool, rowCount: Int) -> CGFloat {
         guard stackedIcons else { return 30 }
-        return rowCount >= 3 ? 39 : 36
+        return rowCount >= 3 ? 45 : 42
     }
 
     private static func switcherOuterPadding(

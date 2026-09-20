@@ -911,7 +911,7 @@ struct StatusMenuSwitcherClickTests {
         }
 
         #expect(view._test_rowCount() == 4)
-        #expect(view._test_rowHeight() == 39)
-        #expect(view.bounds.height == 168)
+        #expect(view._test_rowHeight() == 45)
+        #expect(view.bounds.height == 204)
     }
 }

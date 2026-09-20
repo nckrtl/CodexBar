@@ -26,7 +26,10 @@ them; unrelated plugins keep their configured monograms.
 
 The plugin icon follows the selected enabled plugin, respects used/remaining mode,
 and reads that plugin's primary/secondary windows. Expired windows are unknown.
-The account window displays each named pool and account window independently.
+The menu card and account window display every named quota window in proxy-console order.
+Plugins use the upstream `extraWindows` contract; primary/secondary remain internal
+summary values for the status icon and preview bar. Proxy previews share the built-in
+switcher layout, with extra vertical space for quota bars.
 Disabled accounts retain their individual quota where readable but do not contribute capacity.
 Failed refreshes show a visible warning and disable controls until a fresh read.
 

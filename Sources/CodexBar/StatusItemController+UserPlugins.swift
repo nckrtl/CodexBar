@@ -243,9 +243,15 @@ private struct UserPluginMenuCardView: View {
                     .font(.callout)
             }
             if let snapshot {
-                self.window("Primary", snapshot.primary)
-                self.window("Secondary", snapshot.secondary)
-                self.window("Tertiary", snapshot.tertiary)
+                if let windows = snapshot.extraRateWindows, !windows.isEmpty {
+                    ForEach(windows, id: \.id) { named in
+                        self.window(named.title, named.window)
+                    }
+                } else {
+                    self.window("Primary", snapshot.primary)
+                    self.window("Secondary", snapshot.secondary)
+                    self.window("Tertiary", snapshot.tertiary)
+                }
                 if let cost = snapshot.providerCost {
                     HStack {
                         Text(cost.period ?? "Cost").foregroundStyle(.secondary)
@@ -257,7 +263,11 @@ private struct UserPluginMenuCardView: View {
                 }
                 if !snapshot.details.isEmpty {
                     Divider()
-                    ProviderDetailSectionsContent(sections: snapshot.details, chartColor: self.tint)
+                    ProviderDetailSectionsContent(
+                        sections: snapshot.details.filter {
+                            snapshot.extraRateWindows?.isEmpty != false || $0.title != "Quota windows"
+                        },
+                        chartColor: self.tint)
                 }
                 if let identity = snapshot.identity(for: self.plugin.manifest.id) {
                     self.identity(identity)
@@ -315,6 +325,9 @@ private struct UserPluginMenuCardView: View {
                     percent: presentation.percent,
                     tint: self.tint,
                     accessibilityLabel: "\(title) usage")
+                if let reset = window.resetDescription {
+                    Text(reset).font(.caption2).foregroundStyle(.secondary)
+                }
             }
         }
     }

@@ -1044,4 +1044,37 @@ private struct Fixture {
         try? FileManager.default.removeItem(at: self.root)
     }
 }
+
+extension UserProviderPluginTests {
+    @MainActor
+    @Test
+    func `proxy preview bars render and refresh beside built in providers`() throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+        _ = try fixture.write(
+            name: "meter.js",
+            source: Self.menuPlugin(id: "proxy-meter", name: "Proxy Meter", topLevel: true))
+        let plugin = try #require(UserProviderPluginRegistry.refresh(
+            loader: fixture.loader(transport: RecordingTransport(responseJSON: "{}"))).first?.plugin)
+        var remaining: Double? = 60
+        let view = ProviderSwitcherView(
+            providers: [.cursor],
+            pluginProviders: [plugin],
+            selected: .provider(plugin.manifest.id),
+            includesOverview: false,
+            width: 310,
+            showsIcons: false,
+            iconProvider: { _ in NSImage() },
+            weeklyRemainingProvider: { _ in 25 },
+            pluginRemainingProvider: { id in id == plugin.manifest.id ? remaining : nil },
+            onSelect: { _ in })
+        #expect(view._test_quotaIndicatorFillRatios() == [0.25, 0.6])
+        remaining = 10
+        view.updateQuotaIndicators()
+        #expect(view._test_quotaIndicatorFillRatios() == [0.25, 0.1])
+        remaining = nil
+        view.updateQuotaIndicators()
+        #expect(view._test_quotaIndicatorFillRatios() == [0.25])
+    }
+}
 #endif
